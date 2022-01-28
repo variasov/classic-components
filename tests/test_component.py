@@ -42,4 +42,4 @@ def test_without_auto_constructor():
     instance = ClsWithInit(prop=123)
 
     assert instance.prop == 123
-    assert instance.__component__ is True
+    assert instance.__component__
