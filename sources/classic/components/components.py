@@ -1,10 +1,14 @@
-from typing import Type, Any
+from typing import Type, Dict, Any
 import inspect
 
 import attr
 
 
 registry = []
+
+
+FUNCTION = 'function'
+CLASS = 'class'
 
 
 def _extend_annotation_from_methods(cls):
@@ -23,7 +27,14 @@ def _extend_annotation_from_methods(cls):
     return cls
 
 
-def component(original_cls: Type = None, init: bool = True, **kwargs: Any):
+@attr.dataclass
+class ComponentParameters:
+    init: bool
+    params: Dict[str, Any]
+    type: str = None
+
+
+def component(original_obj: Type = None, init: bool = True, **kwargs: Any):
     """
     Mark class as component, and, optionally, creates constructor for
     dependency injection. Dependencies must be described
@@ -47,26 +58,38 @@ def component(original_cls: Type = None, init: bool = True, **kwargs: Any):
     # ...
     # TypeError: non-default argument 'another' follows default argument
 
-    def _decorate(cls):
-        setattr(cls, '__component__', {
-            'params': kwargs,
-            'init': init,
-        })
+    def _decorate(obj):
+        setattr(obj, '__component__', ComponentParameters(init, kwargs))
 
-        cls = _extend_annotation_from_methods(cls)
+        if inspect.isfunction(obj):
+            obj.__component__.type = FUNCTION
 
-        if init:
-            cls = attr.dataclass(cls, kw_only=True, eq=False, repr=False)
+        elif inspect.isclass(obj):
+            obj.__component__.type = CLASS
 
-        registry.append(cls)
+            obj = _extend_annotation_from_methods(obj)
+            if init:
+                obj = attr.dataclass(obj, kw_only=True, eq=False, repr=False)
+        else:
+            raise ValueError(f'Component {obj} must be class or function')
 
-        return cls
+        registry.append(obj)
 
-    if original_cls:
-        return _decorate(original_cls)
+        return obj
+
+    if original_obj:
+        return _decorate(original_obj)
 
     return _decorate
 
 
 def is_component(cls: Type) -> bool:
     return hasattr(cls, '__component__')
+
+
+def is_class_component(obj) -> bool:
+    return is_component(obj) and obj.__component__.type == CLASS
+
+
+def is_function_component(obj) -> bool:
+    return is_component(obj) and obj.__component__.type == FUNCTION
