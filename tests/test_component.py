@@ -49,7 +49,7 @@ def test_without_auto_constructor():
     instance = ClsWithInit(prop=123)
 
     assert instance.prop == 123
-    assert instance.__component__
+    assert is_class_component(ClsWithInit)
 
 
 def test_checks():
