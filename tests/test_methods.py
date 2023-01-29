@@ -2,12 +2,9 @@ from contextlib import AbstractContextManager
 from unittest.mock import MagicMock
 
 from pytest import fixture
-from classic.components import (
-    component, make_method_decorator, make_context_manager_wrapper
-)
+from classic.components import component, wrap_context_manager
 
-contextual = make_method_decorator(
-    make_context_manager_wrapper,
+contextual = wrap_context_manager(
     'context_manager',
     AbstractContextManager
 )
@@ -18,22 +15,22 @@ class SomeCls:
     unused_dep: str
 
     @contextual
-    def method1(self):
-        return 1
+    def some_method(self):
+        return 'some'
 
     @contextual(prop_name='context_manager_2')
-    def method2(self):
-        return 2
+    def another_method(self):
+        return 'another'
 
 
 @fixture
 def ctx_manager_1():
-    return MagicMock(AbstractContextManager)
+    return MagicMock(spec=AbstractContextManager)
 
 
 @fixture
 def ctx_manager_2():
-    return MagicMock(AbstractContextManager)
+    return MagicMock(spec=AbstractContextManager)
 
 
 @fixture
@@ -43,11 +40,10 @@ def obj(ctx_manager_1, ctx_manager_2):
                    context_manager_2=ctx_manager_2)
 
 
-def test_default_prop_name(obj, ctx_manager_1, ctx_manager_2):
+def test_default_prop_name(obj: SomeCls, ctx_manager_1, ctx_manager_2):
+    result1 = obj.some_method()
 
-    result1 = obj.method1()
-
-    assert result1 == 1
+    assert result1 == 'some'
 
     ctx_manager_1.__enter__.assert_called()
     ctx_manager_1.__exit__.assert_called()
@@ -55,10 +51,10 @@ def test_default_prop_name(obj, ctx_manager_1, ctx_manager_2):
     ctx_manager_2.__exit__.assert_not_called()
 
 
-def test_custom_prop_name(obj, ctx_manager_1, ctx_manager_2):
-    result2 = obj.method2()
+def test_custom_prop_name(obj: SomeCls, ctx_manager_1, ctx_manager_2):
+    result2 = obj.another_method()
 
-    assert result2 == 2
+    assert result2 == 'another'
 
     ctx_manager_1.__enter__.assert_not_called()
     ctx_manager_1.__exit__.assert_not_called()

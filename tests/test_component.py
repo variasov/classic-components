@@ -1,68 +1,76 @@
+import inspect
+
 import pytest
 
-from classic.components import (
-    component, is_component, is_class_component, is_function_component,
-)
+from classic.components import component, is_component
+
+
+class JustAClass:
+    pass
 
 
 @component
-class SomeCls:
+class SomeComponent:
     prop: int
 
 
 @component
-class Child(SomeCls):
+class SomeChild(SomeComponent):
     another_prop: str
 
 
 @component(init=False)
-class ClsWithInit:
+class ComponentWithCustomInit:
 
     def __init__(self, prop: int):
         self.prop = prop
 
+    def some_method(self):
+        pass
 
-@component
-def some_func(arg):
-    return arg
+
+@pytest.mark.parametrize(
+    'cls,prop_name,prop_type', (
+        (SomeComponent, 'prop', int),
+        (SomeChild, 'prop', int),
+        (SomeChild, 'another_prop', str),
+        (ComponentWithCustomInit, 'prop', int),
+    )
+)
+def test_annotations(cls, prop_name, prop_type):
+    sig = inspect.signature(cls)
+
+    assert prop_name in sig.parameters
+    assert sig.parameters[prop_name].annotation == prop_type
 
 
 def test_class_component():
-    instance = SomeCls(prop=123)
+    instance = SomeComponent(prop=123)
     assert instance.prop == 123
 
     with pytest.raises(TypeError):
-        SomeCls()
+        SomeComponent()
 
     with pytest.raises(TypeError):
-        SomeCls(123)
+        SomeComponent(123)
 
 
 def test_inheriting():
-    instance = Child(prop=123, another_prop='123')
+    instance = SomeChild(prop=123, another_prop='123')
 
     assert instance.prop == 123
     assert instance.another_prop == '123'
 
 
 def test_without_auto_constructor():
-    instance = ClsWithInit(prop=123)
+    assert hasattr(ComponentWithCustomInit, 'some_method')
+    instance = ComponentWithCustomInit(prop=123)
 
+    assert isinstance(instance, ComponentWithCustomInit)
     assert instance.prop == 123
-    assert is_class_component(ClsWithInit)
+    assert hasattr(instance, 'some_method')
 
 
-def test_checks():
-    assert is_component(SomeCls)
-
-    assert is_class_component(SomeCls)
-    assert not is_function_component(SomeCls)
-
-    assert is_function_component(some_func)
-    assert not is_class_component(some_func)
-
-
-def test_func_component():
-    result = some_func(1)
-
-    assert result == 1
+def test_is_component():
+    assert is_component(SomeComponent)
+    assert not is_component(JustAClass)

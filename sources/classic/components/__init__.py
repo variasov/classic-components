@@ -1,5 +1,15 @@
-from .components import (
-    component, registry, is_component,
-    is_class_component, is_function_component
+from .builder import BuildStage, Builder
+from .constructor import GenerateConstructor
+from .annotation_from_methods import ExtendAnnotationFromMethods, add_annotation
+from .public_methods import WrapPublicMethods
+from .context_managers import wrap_context_manager
+from .utils import is_component
+
+
+default_builder = Builder(
+    WrapPublicMethods(),
+    ExtendAnnotationFromMethods(),
+    GenerateConstructor(),
 )
-from .decorators import make_method_decorator, make_context_manager_wrapper
+
+component = default_builder.decorate
