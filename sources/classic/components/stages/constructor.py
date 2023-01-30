@@ -2,7 +2,7 @@ from typing import Any, Tuple
 
 import attr
 
-from .builder import AnyClass, Params, BuildStage
+from ..builder import AnyClass, Params, BuildStage
 
 
 @attr.dataclass

@@ -2,8 +2,8 @@ from typing import Any, Tuple
 import inspect
 import attr
 
-from .builder import BuildStage
-from .types import AnyClass, Params
+from ..builder import BuildStage
+from ..types import AnyClass, Params
 
 
 @attr.dataclass

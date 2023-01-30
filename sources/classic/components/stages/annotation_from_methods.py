@@ -4,8 +4,7 @@ from typing import Tuple, Any
 
 import attr
 
-from .types import Method
-from .builder import AnyClass, Params, BuildStage
+from ..builder import AnyClass, Params, BuildStage
 
 
 @attr.dataclass
@@ -36,12 +35,3 @@ class ExtendAnnotationFromMethods(BuildStage):
     def build(self, cls: AnyClass, **params: Any) -> Tuple[AnyClass, Params]:
         cls.__annotations__ = self._get_extended_annotation(cls)
         return cls, params
-
-
-def add_annotation(method: Method, key: str, value: Any) -> Method:
-    if not hasattr(method, '__self_attrs__'):
-        method.__self_attrs__ = {}
-
-    method.__self_attrs__[key] = value
-
-    return method
