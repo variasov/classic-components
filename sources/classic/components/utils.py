@@ -1,14 +1,26 @@
+import inspect
 from functools import update_wrapper
-from typing import Any, Type
+from typing import Any, Callable
 
-from .types import AnyClass, Method
+from .types import AnyClass
+
+
+AnyFunc = Callable[[...], Any]
 
 
 def is_component(obj: AnyClass) -> bool:
     return hasattr(obj, '__parameters__')
 
 
-def add_annotation(method: Method, key: str, value: Any) -> Method:
+def is_have_self_annotations(method: AnyFunc) -> bool:
+    return hasattr(method, '__self_attrs__')
+
+
+def is_method_with_self_annotations(method: Any) -> bool:
+    return inspect.isfunction(method) and is_have_self_annotations(method)
+
+
+def add_self_annotation(method: AnyFunc, key: str, value: Any) -> AnyFunc:
     if not hasattr(method, '__self_attrs__'):
         method.__self_attrs__ = {}
 
@@ -43,7 +55,7 @@ def context_manager_call_wrapper(
 
 def wrap_context_manager(
     default_prop: str,
-    prop_type: Type[Any],
+    prop_type: AnyClass,
     call_on_enter: bool = False,
 ):
 
@@ -61,7 +73,7 @@ def wrap_context_manager(
 
             wrapper = wrapper(function, prop_name, **kwargs)
             wrapper = update_wrapper(wrapper, function)
-            wrapper = add_annotation(wrapper, prop_name, prop_type)
+            wrapper = add_self_annotation(wrapper, prop_name, prop_type)
 
             return wrapper
 

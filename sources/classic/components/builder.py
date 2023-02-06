@@ -1,7 +1,9 @@
 from functools import partial
-from typing import Any, Tuple
+from typing import Any, Dict, Tuple, Type, TypeVar
 
-from .types import AnyClass, Params
+
+AnyClass = TypeVar('AnyClass', bound=Type[Any])
+Params = Dict[str, Any]
 
 
 class BuildStage:

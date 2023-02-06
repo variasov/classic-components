@@ -1,12 +1,11 @@
-from typing import Any, Tuple
+from dataclasses import dataclass
 import inspect
-import attr
+from typing import Any, Tuple
 
-from ..builder import BuildStage
-from ..types import AnyClass, Params
+from ..builder import AnyClass, BuildStage, Params
 
 
-@attr.dataclass
+@dataclass
 class WrapPublicMethods(BuildStage):
 
     def build(self, cls: AnyClass, **params: Any) -> Tuple[AnyClass, Params]:

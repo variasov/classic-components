@@ -1,16 +1,15 @@
+from dataclasses import dataclass
 from functools import wraps
 from typing import Any, Tuple, TypeVar, get_type_hints, Iterable
 
-import attr
-
-from ..builder import AnyClass, Params, BuildStage
+from ..builder import AnyClass, BuildStage, Params
 from ..registry import Registry
 
 
 T = TypeVar('T')
 
 
-@attr.dataclass
+@dataclass
 class AddRegistrationOnInstantiation(BuildStage):
     registries: Tuple[str] = ()
 
@@ -24,7 +23,7 @@ class AddRegistrationOnInstantiation(BuildStage):
         return cls, params
 
     @staticmethod
-    def _get_registries(cls: T) -> Iterable[str]:
+    def _get_registries(cls: AnyClass) -> Iterable[str]:
         annotations = get_type_hints(cls)
         registries = []
         for name, cls in annotations.items():

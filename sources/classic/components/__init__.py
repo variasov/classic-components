@@ -1,5 +1,5 @@
 from .builder import BuildStage, Builder
-from .utils import is_component, add_annotation, wrap_context_manager
+from .utils import is_component, add_self_annotation, wrap_context_manager
 from .registry import Registry
 
 from . import stages
