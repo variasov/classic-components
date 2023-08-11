@@ -1,15 +1,9 @@
-from .builder import BuildStage, Builder
-from .utils import is_component, add_self_annotation, wrap_context_manager
-from .registry import Registry
-
-from . import stages
-
-
-default_builder = Builder(
-    stages.WrapPublicMethods(),
-    stages.ExtendAnnotationFromMethods(),
-    stages.GenerateConstructor(),
-    stages.AddRegistrationOnInstantiation(),
+from .extra_annotations import (
+    add_extra_annotation, extra_annotations,
+    is_method_with_extra_annotations, is_have_extra_annotations,
 )
-
-component = default_builder.decorate
+from .auto_init import auto_init
+from .public_methods import wrap_public_methods
+from .registries import Registry, WeakSetRegistry, auto_register
+from .context_managers import wrap_context_manager
+from .component import component, is_component

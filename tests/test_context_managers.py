@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 from pytest import fixture
 from classic.components import component, wrap_context_manager
 
+
 contextual = wrap_context_manager(
     'context_manager',
     AbstractContextManager
@@ -18,7 +19,7 @@ class SomeCls:
     def some_method(self):
         return 'some'
 
-    @contextual(prop_name='context_manager_2')
+    @contextual(attr='context_manager_2')
     def another_method(self):
         return 'another'
 
@@ -40,7 +41,7 @@ def obj(ctx_manager_1, ctx_manager_2):
                    context_manager_2=ctx_manager_2)
 
 
-def test_default_prop_name(obj: SomeCls, ctx_manager_1, ctx_manager_2):
+def test__default__prop_name(obj: SomeCls, ctx_manager_1, ctx_manager_2):
     result1 = obj.some_method()
 
     assert result1 == 'some'
@@ -51,7 +52,7 @@ def test_default_prop_name(obj: SomeCls, ctx_manager_1, ctx_manager_2):
     ctx_manager_2.__exit__.assert_not_called()
 
 
-def test_custom_prop_name(obj: SomeCls, ctx_manager_1, ctx_manager_2):
+def test__custom__prop_name(obj: SomeCls, ctx_manager_1, ctx_manager_2):
     result2 = obj.another_method()
 
     assert result2 == 'another'
