@@ -7,3 +7,4 @@ from .public_methods import wrap_public_methods
 from .registries import Registry, WeakSetRegistry, auto_register
 from .context_managers import wrap_context_manager
 from .component import component, is_component
+from .doublewrap import doublewrap
