@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import get_type_hints
 
 from classic.components import component, add_extra_annotation
@@ -14,6 +13,7 @@ def with_dep(prop_name, prop_type):
 
 @component
 class SomeClass:
+    custom_dep: str
 
     def manually_annotated_method(self):
         return self.some_dep
@@ -25,6 +25,10 @@ class SomeClass:
     @with_dep('another_dep', int)
     def func_annotated_method(self):
         return self.another_dep
+
+    @with_dep('custom_dep', int)
+    def func_custom_annotated_method(self):
+        ...
 
 
 @component
@@ -54,3 +58,6 @@ def test_inheritor():
         'some_dep': int,
         'another_dep': str,
     }
+
+def test_extra_annotation_priority():
+    assert SomeClass.__annotations__['custom_dep'] == str

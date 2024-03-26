@@ -56,6 +56,8 @@ def extra_annotations(cls: Class) -> Class:
     members = inspect.getmembers(cls, is_method_with_extra_annotations)
     for __, member in members:
         for prop_name, prop_type in member.__extra_annotations__.items():
+            if prop_name in annotations:
+                continue
             annotations[prop_name] = prop_type
 
     cls.__annotations__ = annotations
