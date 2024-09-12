@@ -1,6 +1,7 @@
 from .extra_annotations import (
-    add_extra_annotation, extra_annotations,
-    is_method_with_extra_annotations, is_have_extra_annotations,
+    add_extra_annotation,
+    extra_annotations,
+    is_have_extra_annotations,
 )
 from .auto_init import auto_init
 from .public_methods import wrap_public_methods
