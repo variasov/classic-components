@@ -27,14 +27,6 @@ def is_have_extra_annotations(method: Method) -> bool:
     return hasattr(method, '__extra_annotations__')
 
 
-def is_method_with_extra_annotations(obj: Any) -> bool:
-    """Предикат, определяющиий, является ли объект методом и есть ли у
-    метода дополнительные аннотации
-    """
-
-    return inspect.isfunction(obj) and is_have_extra_annotations(obj)
-
-
 def extra_annotations(cls: Class) -> Class:
     """
     Декоратор для классов, собирающий дополнительные аннотации со всех методов,
@@ -53,7 +45,7 @@ def extra_annotations(cls: Class) -> Class:
 
     annotations = get_type_hints(cls)
 
-    members = inspect.getmembers(cls, is_method_with_extra_annotations)
+    members = inspect.getmembers(cls, is_have_extra_annotations)
     for __, member in members:
         for prop_name, prop_type in member.__extra_annotations__.items():
             annotations[prop_name] = prop_type
