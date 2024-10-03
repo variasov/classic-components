@@ -1,5 +1,5 @@
 import inspect
-from typing import Any, get_type_hints
+from typing import Any
 
 from .types import Class, Method
 
@@ -43,13 +43,9 @@ def extra_annotations(cls: Class) -> Class:
     {'some_dep': str}
     """
 
-    annotations = get_type_hints(cls)
-
     members = inspect.getmembers(cls, is_have_extra_annotations)
     for __, member in members:
         for prop_name, prop_type in member.__extra_annotations__.items():
-            annotations[prop_name] = prop_type
-
-    cls.__annotations__ = annotations
+            cls.__annotations__[prop_name] = prop_type
 
     return cls

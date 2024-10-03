@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, get_type_hints, Iterable
+from typing import Any, ClassVar, Iterable
 from weakref import WeakSet
 
 from .types import Class, Object
@@ -84,9 +84,8 @@ def unregister_instance(obj: Object, registries: Iterable[str]):
 
 
 def _inspect_registries(cls: Class) -> Iterable[str]:
-    annotations = get_type_hints(cls)
     registries = []
-    for name, cls in annotations.items():
+    for name, cls in cls.__annotations__.items():
         try:
             if issubclass(cls, Registry):
                 registries.append(name)

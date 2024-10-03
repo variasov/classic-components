@@ -1,6 +1,3 @@
-from dataclasses import dataclass
-from typing import get_type_hints
-
 from classic.components import component, add_extra_annotation
 
 
@@ -19,10 +16,10 @@ class SomeClass:
         return self.some_dep
 
     manually_annotated_method.__extra_annotations__ = {
-        'some_dep': int,
+        'some_dep': 'SomeDependency',
     }
 
-    @with_dep('another_dep', int)
+    @with_dep('another_dep', 'SomeDependency')
     def func_annotated_method(self):
         return self.another_dep
 
@@ -33,6 +30,10 @@ class Inheritor(SomeClass):
     @with_dep('another_dep', str)
     def func_annotated_method(self):
         return super().func_annotated_method()
+
+
+class SomeDependency:
+    attr: 'int'
 
 
 def test_class():
@@ -48,9 +49,7 @@ def test_inheritor():
     assert instance.manually_annotated_method() == 1
     assert instance.func_annotated_method() == 2
 
-    type_hints = get_type_hints(Inheritor)
-
-    assert type_hints == {
-        'some_dep': int,
+    assert Inheritor.__annotations__ == {
+        'some_dep': 'SomeDependency',
         'another_dep': str,
     }
