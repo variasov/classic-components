@@ -89,8 +89,7 @@ def wrap_context_manager(
     делал обертывание через with:
     >>> # Простая версия декоратора
     ... def contextual(func):
-    ...     def wrapper(*args, **kwargs):
-    ...         self = args[0]
+    ...     def wrapper(self, *args, **kwargs):
     ...         with self.some_dep:
     ...             return func(*args, **kwargs)
     ...

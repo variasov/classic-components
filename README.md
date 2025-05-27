@@ -44,6 +44,21 @@ class SomeService:
 service = SomeService(prop=1)  # TypeError: SomeService() takes no arguments
 ```
 
+Также есть алиасы для часто используемых параметров field из dataclasses:
+```python
+from dataclasses import field
+from classic.components import component, no_init, factory
+
+
+@component
+class SomeLogic:
+    some_list: field(default_factory=list)
+    analog: factory(list)  # то же самое
+
+    _some_field: object = field(init=False)
+    _analog: object = no_init  # то же самое
+```
+
 ## Реестры
 
 Также пакет предоставляет интерфейс для создания реестров и базовую реализацию
