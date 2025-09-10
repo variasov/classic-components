@@ -47,16 +47,19 @@ service = SomeService(prop=1)  # TypeError: SomeService() takes no arguments
 Также есть алиасы для часто используемых параметров field из dataclasses:
 ```python
 from dataclasses import field
-from classic.components import component, no_init, factory
+from classic.components import component, no_init, factory, default
 
 
 @component
 class SomeLogic:
     some_list: field(default_factory=list)
     analog: factory(list)  # то же самое
+    
+    some_str: str = field(default='Hello')
+    analog_str: str = default('Hello')
 
-    _some_field: object = field(init=False)
-    _analog: object = no_init  # то же самое
+    _some_field: int = field(default=0, init=False)
+    _analog: int = no_init(0)  # то же самое
 ```
 
 ## Реестры

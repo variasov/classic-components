@@ -1,5 +1,4 @@
-from dataclasses import dataclass, field
-from typing import Callable, TypeVar
+import dataclasses
 
 from .types import Class
 
@@ -12,19 +11,9 @@ def auto_init(cls: Class) -> Class:
         - repr = False
     """
 
-    return dataclass(
+    return dataclasses.dataclass(
         cls,
         kw_only=True,
         eq=False,
         repr=False,
     )
-
-
-T = TypeVar('T')
-Factory = Callable[[], T]
-
-def factory(fn: Factory) -> field:
-    return field(default_factory=fn)
-
-
-no_init = field(init=False, default=None)
