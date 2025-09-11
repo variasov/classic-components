@@ -1,12 +1,11 @@
 # Classic Components
 
-Этот пакет предоставляет функциональность компонентов. Является частью проекта
-"Classic".
+Предоставляет утилиты для удобного описания классов.
 
 Главное, что предоставляет пакет - это декоратор component для обертывания 
 классов. Класс, обернутый таким декоратором, называется далее компонентом,
 и обладает рядом свойств:
-- автоматически сгенерированный конструктор на базе аннотаций.
+- автоматически сгенерированный конструктор на базе аннотаций (dataclass).
 - добавляет "дополнительные аннотации" к аннотациям класса (подробности далее)
 - добавляет автоматическую регистрацию инстансов в указанных реестрах
 
@@ -44,24 +43,6 @@ class SomeService:
 service = SomeService(prop=1)  # TypeError: SomeService() takes no arguments
 ```
 
-Также есть алиасы для часто используемых параметров field из dataclasses:
-```python
-from dataclasses import field
-from classic.components import component, no_init, factory, default
-
-
-@component
-class SomeLogic:
-    some_list: field(default_factory=list)
-    analog: factory(list)  # то же самое
-    
-    some_str: str = field(default='Hello')
-    analog_str: str = default('Hello')
-
-    _some_field: int = field(default=0, init=False)
-    _analog: int = no_init(0)  # то же самое
-```
-
 ## Реестры
 
 Также пакет предоставляет интерфейс для создания реестров и базовую реализацию
@@ -85,5 +66,24 @@ service = SomeService(registry=registry)
 
 print(registry.storage)
 # {<weakref at 0x109390fe0; to 'SomeService' at 0x10933ec50>}
+```
 
+## Алиасы для dataclasses.field
+
+Также есть алиасы для часто используемых параметров field из dataclasses:
+```python
+from dataclasses import field
+from classic.components import component, no_init, factory, default
+
+
+@component
+class SomeLogic:
+    some_list: field(default_factory=list)
+    analog: factory(list)  # то же самое
+    
+    some_str: str = field(default='Hello')
+    analog_str: str = default('Hello')
+
+    _some_field: int = field(default=0, init=False)
+    _analog: int = no_init(0)  # то же самое
 ```
